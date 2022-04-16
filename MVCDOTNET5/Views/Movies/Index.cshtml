@@ -69,21 +69,41 @@
             var btn = $(this);
             var id = btn.data('id')
             console.log(id);
-            var Result = confirm("Are You Sure that delete this Movie ")
-            if (Result) {
-                $.ajax({
-                    url: '/movies/detete/' + id,
-                    async: false,
-                    success: function () {
-                        console.log(btn.data('id'));
-                        btn.parents('.col-12').fadeOut();
-                        toastr.success('Movie Deleted');
+            bootbox.confirm({
+                message: "Are You Sure that delete this Movie ?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-danger'
                     },
-                    error: function () {
-                        toastr.error('Something Error');
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-outline-secondary'
                     }
-                });
-            }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: '/movies/detete/' + id,
+                            async: false,
+                            success: function () {
+                                console.log(btn.data('id'));
+                                var movieContainer = btn.parents('.col-12')
+                                movieContainer.fadeOut().addClass('animate__animated animate__zoomOut');
+                                setTimeout(function () {
+                                    movieContainer.remove();
+                                },1000)
+                                
+                                toastr.success('Movie Deleted');
+                            },
+                            error: function () {
+                                toastr.error('Something Error');
+                            }
+                        });
+                    }
+                }
+            });
+
             });
     });
 </script>
